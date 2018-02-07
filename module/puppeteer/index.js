@@ -8,7 +8,20 @@ const dmr = require('./../util/datemanager.js');
 const fs = require('fs');
 const logger = require('./../util/logger.js');
 
-const USERINFO = require('./../../userinfo.js').data;
+const USERINFO = require('./../../userinfo.js').data; // NEED
+
+/*
+USERINFO 예제를 참고할 것
+
+exports.data = {
+  id:"ID",
+  password:"PASSWORD",
+  credit : {
+    password : "PASSWORD"
+  }
+}
+
+*/
 
 exports.run = function(){
   puppeteer.launch({
