@@ -3,7 +3,7 @@ const pg = require('./pg.js');
 const logger = require('./../util/logger.js');
 const moduleName = "ORDER :: ";
 
-exports.run = async function(param){
+module.exports = async function(param){
   var browser = param.browser;
   var page = param.page;
 

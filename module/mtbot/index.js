@@ -24,7 +24,7 @@ exports.data = {
 
 */
 
-exports.run = function(parameter){
+module.exports = function(parameter){
   puppeteer.launch({
     headless:false,
     args: ['--no-sandbox', '--disable-setuid-sandbox','--enable-file-cookies']
@@ -56,7 +56,7 @@ exports.run = function(parameter){
         "telegram" : parameter.telegram
       }
       logger.debug("INIT :: 로그인을 시작합니다.");
-      await login.run(param, hmall.main);
+      await login(param, hmall);
     })
   });
 }

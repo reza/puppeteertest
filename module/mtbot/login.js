@@ -3,7 +3,7 @@ const logger = require('./../util/logger.js');
 
 const moduleName = "LOGIN :: ";
 
-  exports.run = async function(param,callback){
+  module.exports = async function(param,callback){
     await param.browser.once('targetcreated',async target=>{
       const popup = await target.page();
       popup.once('load',async ()=>{

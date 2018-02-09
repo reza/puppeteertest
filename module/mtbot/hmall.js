@@ -5,7 +5,7 @@ const moduleName = "HMALL :: ";
 
 
 
-exports.main = async function(param){
+module.exports = async function(param){
   var browser = param.browser;
   var page = param.page;
 
@@ -27,7 +27,7 @@ exports.main = async function(param){
 
       await page.once('load',async()=>{
         logger.debug(moduleName + "ORDER모듈을 실행합니다.");
-        order.run(param);
+        order(param);
       });
     })
   })
