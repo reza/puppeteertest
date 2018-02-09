@@ -8,6 +8,6 @@ const path = require('path');
 const app = web.app;
 
 app.listen(9642,(req,res)=>{
-  //pageAuto.run()
+  pageAuto.run({telegram:telegraf})
   console.log("DONE!");
 });

@@ -1,3 +1,4 @@
+const common = require('./common.js');
 const pg = require('./pg.js');
 const logger = require('./../util/logger.js');
 const moduleName = "ORDER :: ";
@@ -6,7 +7,7 @@ exports.run = async function(param){
   var browser = param.browser;
   var page = param.page;
 
-  await page.screenshot({path:param.datapath+"order.png",fullPage:true});
+  await common.screenshot(page,param.datapath+"order.jpg");
   logger.debug(moduleName + "ORDER 페이지를 캡처했습니다.");
 
   await page.click("#payTypeDiv .payType label[for='payType1']",{delay:250});

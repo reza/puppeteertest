@@ -1,4 +1,5 @@
 const puppeteer = require('puppeteer');
+const common = require('./common.js');
 
 const login = require('./login.js');
 const hmall = require('./hmall.js');
@@ -23,7 +24,7 @@ exports.data = {
 
 */
 
-exports.run = function(){
+exports.run = function(parameter){
   puppeteer.launch({
     headless:false,
     args: ['--no-sandbox', '--disable-setuid-sandbox','--enable-file-cookies']
@@ -41,7 +42,7 @@ exports.run = function(){
 
     await page.goto('http://www.hyundaihmall.com/Home.html',{waitUntil:"domcontentloaded"});
     await page.once('load',async ()=>{
-      await page.screenshot({path:datapath+"/pc/"+"site.png",fullPage:true});
+      await common.screenshot(page,datapath+"/pc/"+"site.jpg");
       await page.evaluate(()=>{
         openLoginPopup()
       })
@@ -51,7 +52,8 @@ exports.run = function(){
         "page" : page,
         "data" : USERINFO,
         "folder" : date.text,
-        "datapath" : datapath+"/pc/"
+        "datapath" : datapath+"/pc/",
+        "telegram" : parameter.telegram
       }
       logger.debug("INIT :: 로그인을 시작합니다.");
       await login.run(param, hmall.main);

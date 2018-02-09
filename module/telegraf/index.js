@@ -14,27 +14,77 @@ for(var i=0;i<8;i++){
 }
 
 const keyboard = Markup.inlineKeyboard(keyboardList)
-
+var memberlist = [];
+var accesslist = [];
+var chatid = ""
 const bot = new Telegraf("438866750:AAFEUS8HmNkU-0r7aj69DzBfkwXCRx0BbSI")
-bot.start((ctx) => ctx.reply('Hey there!'))
+bot.start((ctx) => {
+  ctx.replyWithHTML('<b>처음에 등록이 필요합니다!</b>');
+  ctx.replyWithHTML('/regist 를 통해서 등록해주세요!');
+  ctx.reply(ctx.chat.id);
+
+//  chatid = ctx.chat.id;
+})
+bot.command("regist",(ctx)=>{
+  var flag = 1;
+  for(i=0;i<memberlist.length;i++){
+    if(memberlist[i] == ctx.chat.id){
+      flag = 0;
+    }
+  }
+  if(flag == 1){
+    memberlist.push(ctx.chat.id);
+    ctx.reply("등록이 완료되었습니다. 등록자 : "+memberlist.length);
+  }else{
+    ctx.reply("두번 등록은 되지 않아요.. ㅠㅠ ");
+  }
+})
+exports.sendMessage = function(text){
+//  bot.telegram.sendMessage("@hmonit",text);
+  for(i=0;i<memberlist.length;i++){
+    bot.telegram.sendMessage(memberlist[i],text);
+  }
+  if(memberlist.length == 0){
+    console.log("Telegrambot : 내가 혼자라니!");
+  }
+}
+bot.command("hello",(ctx)=>{
+  ctx.reply("안녕!");
+})
+
+bot.command("image",(ctx)=>{
+  var parameter = ctx.message.text.split(" ")[1]
+  try{
+
+    if(parameter !== ""){
+      ctx.reply("데이터가 있습니다!"+parameter);
+      if(parameter.match(RegExp) !== null){
+        fs.readdirSync("./hmall/").forEach(file => {
+          var datetime = file;
+              datetime = datetime.substr(0,12);
+              if(datetime == parameter ){
+                ctx.reply("확인완료!");
+                //ctx.reply('http://182.162.19.54:9642/hmall/'+file+'/pc/test2.jpg');
+                ctx.replyWithPhoto({
+                  source : fs.createReadStream('./hmall/'+file+'/pc/site_Logined.jpg')
+                });
+                ctx.replyWithPhoto({
+                  source : fs.createReadStream('./hmall/'+file+'/pc/detail.jpg')
+                });
+                ctx.replyWithPhoto({
+                  source : fs.createReadStream('./hmall/'+file+'/pc/order.jpg')
+                });
+              }
+        })
+      }
+    }
+  }catch(e){
+    ctx.reply("찾을 수 없습니다. ㅠㅠ"+e);
+  }
+})
 bot.on('message', (ctx) => {
   /* 1. WHAT DATE */
   /* 2. WHAT TIME */
-  if(ctx.message.text.match(RegExp) !== null){
-    var datetext = ctx.message.text;
-    fs.readdirSync("./hmall/").forEach(file => {
-      var datetime = file;
-          datetime = datetime.substr(0,12);
-      if(datetime == datetext ){
-        ctx.replyWithPhoto('/hmall/'+file+'/pc/site.png');
-      }
-    })
-
-
-  }else{
-    ctx.reply("시간을 적어주세요.");
-  }
-
   /* 3. OUTPUT */
 
 })

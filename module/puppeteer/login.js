@@ -1,4 +1,6 @@
+const common = require('./common.js');
 const logger = require('./../util/logger.js');
+
 const moduleName = "LOGIN :: ";
 
   exports.run = async function(param,callback){
@@ -27,7 +29,7 @@ const moduleName = "LOGIN :: ";
           // 로그인 시도
           logger.debug(moduleName + "로그인을 시도합니다!");
           await popup.click(".btn_login")
-          //await page.screenshot({path:"loginafter.png",fullPage:true});
+          //await page.screenshot({path:"loginafter.jpg",fullPage:true});
           logger.debug(moduleName + "로그인완료!");
           try{
             // 로그인 이후
