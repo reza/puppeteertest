@@ -2,14 +2,35 @@ const common = require('./common.js');
 const logger = require('./../util/logger.js');
 const moduleName = "PG :: ";
 
-exports.shinhan = function(popup,param){
-  popup.once('load',async ()=>{
+exports.shinhan = async function(popup,param){
+
+    var screenshotSetting = {
+      title:"HMALL PG Module",
+      date: param.datetime,
+      platform: param.platform,
+      phase: 0
+    }
+
+  await popup.once('load',async ()=>{
     //pay(popup,param);
-    await logger.debug(moduleName+"결제모듈 대기 3초!");
-    await popup.waitFor(3000);
-    await common.screenshot(popup,param.datapath+"card.jpg");
-    await param.telegram.sendMessage(moduleName+"페이지 정상 작동!");
-    await param.browser.close();
+    try{
+      await logger.debug(moduleName+"결제모듈 대기 3초!");
+      await popup.waitFor(3000);
+      await common.screenshot(popup,param.datapath+"card.jpg",screenshotSetting);
+      await param.telegram.sendMessage(moduleName+"페이지 정상 작동!");
+      await param.browser.close();
+    }catch(e){
+      common.error(popup,param.datapath+"/PGError.jpg",
+        {
+          "title"         : "상세페이지 에러",
+          "date"          : param.datetime,
+          "platform"      : param.platform,
+          "phase"         : 0,
+          "errorMessage"  : e.toString(),
+          "consoleMessage": "",
+        }
+      )
+    }
   })
 
 }

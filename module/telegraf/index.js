@@ -48,6 +48,26 @@ exports.sendMessage = function(text){
     console.log("Telegrambot : 내가 혼자라니!");
   }
 }
+
+
+exports.sendMessageWithImage = async function(text,imgURL){
+//  bot.telegram.sendMessage("@hmonit",text);
+  for(i=0;i<memberlist.length;i++){
+    console.log(imgURL);
+
+    await bot.telegram.sendMessage(memberlist[i],text);
+    var inputFile = {
+      stream: fs.createReadStream(imgURL),
+      fileName: 'file.png'
+    };
+    await bot.telegram.sendPhoto(memberlist[i],inputFile,{
+      caption:'file.png'
+    });
+  }
+  if(memberlist.length == 0){
+    console.log("Telegrambot : 내가 혼자라니!");
+  }
+}
 bot.command("hello",(ctx)=>{
   ctx.reply("안녕!");
 })
