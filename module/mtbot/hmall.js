@@ -15,10 +15,39 @@ module.exports = async function(param){
       phase: 0
     }
 
-    page.on('console',()=>{console.log("error");})
+    page.on('console',async msg=>{
+      console.log(param.page.url());
+      console.log(moduleName+"consoleMessage");
+      await common.consolelog(page,param.datapath+"/hmallConsoleError.jpg",
+        {
+          "title"         : "콘솔 에러",
+          "date"          : param.datetime,
+          "platform"      : param.platform,
+          "phase"         : 0,
+          "errorMessage"  : "",
+          "consoleMessage": moduleName+msg.text(),
+          "url"  : page.url()
+        }
+      )
+    })
 
     await page.once('load',async()=>{
       try{
+        page.on("pageerror",async msg=>{
+          console.log(param.page.url());
+            console.log(moduleName+"pageerror");
+            await common.consolelog(page,param.datapath+"/hmallPageError.jpg",
+              {
+                "title"         : "콘솔 에러",
+                "date"          : param.datetime,
+                "platform"      : param.platform,
+                "phase"         : 0,
+                "errorMessage"  : "",
+                "consoleMessage": moduleName+msg.text(),
+                "url"  : page.url()
+              }
+            )
+        })
 
         logger.debug(moduleName + "로그인 이후 홈페이지로 돌아왔습니다.");
 
@@ -26,9 +55,13 @@ module.exports = async function(param){
         logger.debug(moduleName + "로그인 이후 메인페이지 캡처완료!");
 
         logger.debug(moduleName + "임의의 페이지로 접속을 시도합니다.");
+        var a = await page.evaluate(async ()=>{
+          return $('a[href*="/front/pda/itemPtc.do"]')[Math.floor(Math.random()*$('a[href*="/front/pda/itemPtc.do"]').length)].href;
+        })
+        await common.sendMessage("접근을 시도합니다!");
 
-
-        await page.goto("http://www.hyundaihmall.com/front/pda/itemPtc.do?slitmCd=2063720064&sectId=141253").then(async()=>{
+        await page.goto(a).then(async()=>{
+//    await page.$('a[href*="/front/pda/itemPtc.do"]').click().then(async()=>{
           try{
             logger.debug(moduleName + "상품페이지로 접속하였습니다.");
 
@@ -49,6 +82,7 @@ module.exports = async function(param){
                 "phase"         : 0,
                 "errorMessage"  : e.toString(),
                 "consoleMessage": "",
+                "url"  : page.url()
               }
             )
           }
@@ -65,7 +99,7 @@ module.exports = async function(param){
             "date"          : param.datetime,
             "platform"      : param.platform,
             "phase"         : 0,
-            "errorMessage"  : e.toString(),
+            "errorMessage"  : moduleName+e.toString(),
             "consoleMessage": "",
           }
         )

@@ -18,6 +18,7 @@ exports.shinhan = async function(popup,param){
       await popup.waitFor(3000);
       await common.screenshot(popup,param.datapath+"card.jpg",screenshotSetting);
       await param.telegram.sendMessage(moduleName+"페이지 정상 작동!");
+      await common.report();
       await param.browser.close();
     }catch(e){
       common.error(popup,param.datapath+"/PGError.jpg",

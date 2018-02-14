@@ -2,6 +2,7 @@ const Telegraf = require('telegraf')
 const Extra = require('telegraf/extra')
 const Markup = require('telegraf/markup')
 const fs = require('fs');
+const MTBot = require('./../mtbot');
 
 var RegExp = /^(19|20)\d{2}(0[1-9]|1[012])(0[1-9]|[12][0-9]|3[0-1])([1-9]|[01][0-9]|2[0-3])([0-5][0-9])$/;
 
@@ -25,15 +26,18 @@ bot.start((ctx) => {
 
 //  chatid = ctx.chat.id;
 })
+bot.command("restart",(ctx)=>{
+  MTBot({telegram:this})
+})
 bot.command("regist",(ctx)=>{
   var flag = 1;
   for(i=0;i<memberlist.length;i++){
-    if(memberlist[i] == ctx.chat.id){
+    if(memberlist[i].chat.id == ctx.chat.id){
       flag = 0;
     }
   }
   if(flag == 1){
-    memberlist.push(ctx.chat.id);
+    memberlist.push(ctx);
     ctx.reply("등록이 완료되었습니다. 등록자 : "+memberlist.length);
   }else{
     ctx.reply("두번 등록은 되지 않아요.. ㅠㅠ ");
@@ -42,7 +46,7 @@ bot.command("regist",(ctx)=>{
 exports.sendMessage = function(text){
 //  bot.telegram.sendMessage("@hmonit",text);
   for(i=0;i<memberlist.length;i++){
-    bot.telegram.sendMessage(memberlist[i],text);
+    bot.telegram.sendMessage(memberlist[i].chat.id,text);
   }
   if(memberlist.length == 0){
     console.log("Telegrambot : 내가 혼자라니!");
@@ -53,16 +57,16 @@ exports.sendMessage = function(text){
 exports.sendMessageWithImage = async function(text,imgURL){
 //  bot.telegram.sendMessage("@hmonit",text);
   for(i=0;i<memberlist.length;i++){
-    console.log(imgURL);
+    await bot.telegram.sendMessage(memberlist[i].chat.id,text);
+    //try{
+      await memberlist[i].replyWithPhoto({
+        source : fs.createReadStream(imgURL)
+      });
+    /*}catch(e){
+      console.log(e);
+      await memberlist[i].reply("http://182.162.19.54:9642/"+imgURL);
+    }*/
 
-    await bot.telegram.sendMessage(memberlist[i],text);
-    var inputFile = {
-      stream: fs.createReadStream(imgURL),
-      fileName: 'file.png'
-    };
-    await bot.telegram.sendPhoto(memberlist[i],inputFile,{
-      caption:'file.png'
-    });
   }
   if(memberlist.length == 0){
     console.log("Telegrambot : 내가 혼자라니!");

@@ -27,6 +27,7 @@ exports.data = {
 module.exports = function(parameter){
   puppeteer.launch({
     headless:false,
+//    devtools:true,
     args: ['--no-sandbox', '--disable-setuid-sandbox','--enable-file-cookies']
   }).then(async browser => {
     var page = await browser.newPage();
@@ -39,17 +40,25 @@ module.exports = function(parameter){
     await fs.mkdirSync(datapath+"/mobile/",0777);
     await page.setViewport({width:1200,height:800});
 
+    await page.on('dialog',dlg=>{
+      //dlg.dismiss();
+    })
+    await page.on('pageerror',async msg=>{
+      console.log("MAIN :: pageerror");
+      await common.consolelog(page,gParam.datapath+"/MainError.jpg",
+        {
+          "title"         : "콘솔 에러",
+          "date"          : gParam.datetime,
+          "platform"      : gParam.platform,
+          "phase"         : 0,
+          "errorMessage"  : "",
+          "consoleMessage": "MAIN :: "+msg.text(),
+          "url"  : page.url()
+        }
+      )
+    })
     await page.goto('http://www.hyundaihmall.com/Home.html',{waitUntil:"domcontentloaded"});
 
-    await page.on('dialog',()=>{
-      console.log("에러1");
-    })
-    await page.on('pageerror',()=>{
-      console.log("에러2");
-    })
-    await page.on('requestfailed',()=>{
-      console.log("에러3");
-    })
     await page.once('load',async ()=>{
 
       var param = {
@@ -73,7 +82,9 @@ module.exports = function(parameter){
 
       try{
         await common.screenshot(page,datapath+"/pc/"+"site.jpg",screenshotSetting);
+
         await page.evaluate(()=>{
+          //openadsfaf();
           openLoginPopup();
         })
 
@@ -88,6 +99,7 @@ module.exports = function(parameter){
             "phase"         : 0,
             "errorMessage"  : e.toString(),
             "consoleMessage": "",
+            "url"  : page.url()
           }
         )
       }
