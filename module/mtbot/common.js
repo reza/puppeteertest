@@ -10,6 +10,7 @@ const STATUS = {
 
 var messageList = [];
 
+
 exports.screenshot = async function(page,path,param){
   await page.screenshot({"path":path,"fullPage":false,"quality":30,"type":"jpeg",
     "clip":{
@@ -35,6 +36,7 @@ exports.screenshot = async function(page,path,param){
 
 exports.error = async function(page,path,error){
   console.log("에러발생!");
+  console.log(error);
   await page.screenshot({"path":path,"fullPage":false,"quality":30,"type":"jpeg",
     "clip":{
         x:0,y:0,width:1183,height:2000
@@ -105,6 +107,8 @@ exports.consolelog = async function(page,path,error){
 function convertError(text){
   if(text.match("No node found for selector")){
     return "ㅠㅠ MT봇이 버튼을 찾지 못했습니다."
+  }else{
+    return text;
   }
 
 }
@@ -119,3 +123,8 @@ async function report(){
   await gParam.browser.close();
 }
 exports.report = report;
+exports.restart = function(){
+  console.log("RESTART");
+  gParam.telegram.restartMTBot();
+  //telegraf2.MTBot();
+}

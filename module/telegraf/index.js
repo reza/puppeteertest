@@ -26,7 +26,20 @@ bot.start((ctx) => {
 
 //  chatid = ctx.chat.id;
 })
+
 bot.command("restart",(ctx)=>{
+  var flag = 1;
+  for(i=0;i<memberlist.length;i++){
+    if(memberlist[i].chat.id == ctx.chat.id){
+      flag = 0;
+    }
+  }
+  if(flag == 1){
+    memberlist.push(ctx);
+    ctx.reply("등록이 완료되었습니다. 등록자 : "+memberlist.length);
+  }else{
+    ctx.reply("두번 등록은 되지 않아요.");
+  }
   MTBot({telegram:this})
 })
 bot.command("regist",(ctx)=>{
@@ -40,7 +53,7 @@ bot.command("regist",(ctx)=>{
     memberlist.push(ctx);
     ctx.reply("등록이 완료되었습니다. 등록자 : "+memberlist.length);
   }else{
-    ctx.reply("두번 등록은 되지 않아요.. ㅠㅠ ");
+    ctx.reply("두번 등록은 되지 않아요.");
   }
 })
 exports.sendMessage = function(text){
@@ -119,3 +132,7 @@ bot.action('data', (data) => {
 bot.action('delete', ({ deleteMessage }) => deleteMessage())
 bot.action('delete', ({ deleteMessage }) => deleteMessage())
 bot.startPolling()
+
+exports.restartMTBot = function(){
+  MTBot({telegram:this})
+}

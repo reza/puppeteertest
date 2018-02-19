@@ -38,6 +38,28 @@ module.exports = async function(param){
 
     await page.click(".sbBtns > button",{delay:250});
     logger.debug(moduleName + "결제를 시작합니다!");
+    await page.evaluate(function(){
+      setTimeout(function(){
+
+        try{
+          selectGift();
+        }catch(e){
+
+        }
+
+
+      },1000)
+    })
+    /*
+    await page.waitFor(1000);
+    var giftSelectionData = await page.evaluate(function(){
+      return $("#giftSelection").html();
+    })
+    if(giftSelectionData !== ""){
+      await page.evaluate(function(){
+        selectGift();
+      })
+    }*/
 
 
     await browser.once('targetcreated',async target=>{
