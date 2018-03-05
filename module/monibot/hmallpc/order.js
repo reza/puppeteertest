@@ -1,6 +1,6 @@
-const common = require('./common.js');
+const common = require('./../common.js');
 const pg = require('./pg.js');
-const logger = require('./../util/logger.js');
+const logger = require('./../../util/logger.js');
 const moduleName = "ORDER :: ";
 
 module.exports = async function(param){

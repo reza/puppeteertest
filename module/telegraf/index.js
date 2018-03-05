@@ -2,7 +2,7 @@ const Telegraf = require('telegraf')
 const Extra = require('telegraf/extra')
 const Markup = require('telegraf/markup')
 const fs = require('fs');
-const MTBot = require('./../mtbot');
+const Monibot = require('./../monibot');
 
 var RegExp = /^(19|20)\d{2}(0[1-9]|1[012])(0[1-9]|[12][0-9]|3[0-1])([1-9]|[01][0-9]|2[0-3])([0-5][0-9])$/;
 
@@ -40,7 +40,7 @@ bot.command("restart",(ctx)=>{
   }else{
     ctx.reply("두번 등록은 되지 않아요.");
   }
-  MTBot({telegram:this})
+  Monibot({telegram:this})
 })
 bot.command("regist",(ctx)=>{
   var flag = 1;
@@ -134,5 +134,5 @@ bot.action('delete', ({ deleteMessage }) => deleteMessage())
 bot.startPolling()
 
 exports.restartMTBot = function(){
-  MTBot({telegram:this})
+  Monibot({telegram:this})
 }

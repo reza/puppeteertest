@@ -1,15 +1,15 @@
 const puppeteer = require('puppeteer');
-const common = require('./common.js');
+const common = require('./../common.js');
 
 const login = require('./login.js');
 const hmall = require('./hmall.js');
 
 //Util
-const dmr = require('./../util/datemanager.js');
+const dmr = require('./../../util/datemanager.js');
 const fs = require('fs');
-const logger = require('./../util/logger.js');
+const logger = require('./../../util/logger.js');
 
-const USERINFO = require('./../../userinfo.js').data; // NEED
+const USERINFO = require('./../../../userinfo.js').data; // NEED
 
 /*
 USERINFO 예제를 참고할 것

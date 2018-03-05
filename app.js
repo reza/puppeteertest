@@ -1,4 +1,4 @@
-const MTBot = require('./module/mtbot');
+const Monibot = require('./module/monibot');
 const logger = require('./module/util/logger.js');
 const web = require('./module/web');
 const telegraf = require('./module/telegraf');
@@ -10,6 +10,6 @@ const app = web.app;
 
 
 app.listen(9642,(req,res)=>{
-  MTBot({telegram:telegraf})
+  Monibot({telegram:telegraf})
   //title,filepath,datetime,platform,phase,status
 });

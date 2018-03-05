@@ -1,5 +1,5 @@
-const common = require('./common.js');
-const logger = require('./../util/logger.js');
+const common = require('./../common.js');
+const logger = require('./../../util/logger.js');
 const moduleName = "PG :: ";
 
 exports.shinhan = async function(popup,param){
