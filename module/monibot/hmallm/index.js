@@ -42,8 +42,6 @@ module.exports = function(parameter){
     await fs.mkdirSync(datapath+"/pc/",0777);
     await fs.mkdirSync(datapath+"/mobile/",0777);
     await page.emulate(iPhone);
-//    await page.setUseragent("Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/64.0.3282.186 Mobile Safari/537.36");
-    await page.setViewport({width:1200,height:800});
 
     await page.on('dialog',dlg=>{
       //dlg.dismiss();
