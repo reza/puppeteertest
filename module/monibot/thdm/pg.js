@@ -12,8 +12,14 @@ exports.shinhan = async function(popup,param){
     }
       await logger.debug(moduleName+"결제모듈 대기 3초!");
       await popup.waitFor(3000);
-      await common.screenshot(popup,param.datapath+"card.jpg",screenshotSetting);
-      await param.telegram.sendMessage("페이지 정상 작동! (신한카드 결제모듈 호출!)");
+      await common.screenshot(popup,param.datapath+"card.jpg",{
+        title:"TheHyundai Mobile PG Module",
+        date: param.datetime,
+        platform: param.platform,
+        phase: 0
+      });
+      await popup.waitFor(3000);
+      await param.telegram.sendMessage("페이지 정상 작동! (신한카드의 결제모듈을 호출했습니다.)");
       //await common.report();
       await param.browser.close();
       await common.restart();
@@ -22,7 +28,6 @@ exports.shinhan = async function(popup,param){
     try{
       await logger.debug(moduleName+"결제모듈 대기 3초!");
       await popup.waitFor(3000);
-      await common.screenshot(popup,param.datapath+"card.jpg",screenshotSetting);
       await param.telegram.sendMessage("페이지 정상 작동!");
       //await common.report();
       await param.browser.close();

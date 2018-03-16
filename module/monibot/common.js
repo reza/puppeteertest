@@ -12,9 +12,10 @@ var messageList = [];
 
 
 exports.screenshot = async function(page,path,param){
+  console.log("스크린샷"+path)
   await page.screenshot({"path":path,"fullPage":false,"quality":30,"type":"jpeg",
     "clip":{
-        x:0,y:0,width:1183,height:2000
+        x:0,y:0,width:375,height:667
       }
 
   });
@@ -65,7 +66,7 @@ exports.error = async function(page,path,error){
     await gParam.telegram.sendMessageWithImage("현재 URL :"+error.url+"\n콘솔메시지 : "+error.consoleMessage,path);
   }
   await gParam.telegram.sendMessage("에러 발생! 모니터링 중단!!");
-  await gParam.browser.close();
+  //await gParam.browser.close();
 }
 
 exports.sendMessage = async function(text){

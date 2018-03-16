@@ -9,7 +9,7 @@ module.exports = async function(param){
   var browser = param.browser;
   var page = param.page;
     var screenshotSetting = {
-      title:"HMALL Main Module (Login)",
+      title:"TheHyundai Main Module (Login)",
       date: param.datetime,
       platform: param.platform,
       phase: 0
@@ -103,16 +103,7 @@ module.exports = async function(param){
           return $('a[href*="/front/pda/itemPtc.thd"]')[Math.floor(Math.random()*$('a[href*="/front/pda/itemPtc.thd"]').length)].href;
         })
         await common.sendMessage("접근을 시도합니다!\n"+a);
-        //a = "http://www.thehyundai.com/front/pda/itemPtc.thd?slitmCd=2064461640&MainpageGroup=StorePick&GroupbannerName=StorePick_3";
-        //a= "http://www.thehyundai.com/front/pda/itemPtc.thd?slitmCd=60A0169773&MainpageGroup=TheDreamDealSub&GroupbannerName=TheDreamDealSub_6";
-        //a = "http://www.hyundaihmall.com/front/pda/itemPtc.do?slitmCd=2061104362&MainpageGroup=CateSect01&GroupbannerName=CateSect01_5_87914_0214"; // 품절
-        //a='http://www.hyundaihmall.com/front/pda/itemPtc.do?slitmCd=2060498356&MainpageGroup=CateSect01&GroupbannerName=CateSect01_3_87911_0218'; // 정적 셀럭트박스
-        //a="http://www.hyundaihmall.com/front/pda/itemPtc.do?slitmCd=2064086386&MainpageGroup=TVSect&GroupbannerName=TVSect_2_87506_0206"; // 테스트
-        //a = "http://www.hyundaihmall.com/front/pda/itemPtc.do?slitmCd=2056663405&MainpageGroup=CateSect08&GroupbannerName=CateSect08_1_87691_0211"
-        //a = "http://www.hyundaihmall.com/front/pda/itemPtc.do?slitmCd=2064536893&Main%20pageGroup=CateSect05&GroupbannerName=CateSect05_2_87912_0214"
-        //a = "http://www.thehyundai.com/front/pda/itemPtc.thd?slitmCd=2064426580&MainpageGroup=StorePick&GroupbannerName=StorePick_5";
         await page.goto(a).then(async()=>{
-//    await page.$('a[href*="/front/pda/itemPtc.do"]').click().then(async()=>{
 
       /* 상품페이지 */
           try{
@@ -225,7 +216,6 @@ module.exports = async function(param){
                    buyDirect();
                  },2000);
                })
-               //await page.click(".sstpl_product_info_R .btnWrapA > a.btnBuy");
 
             }else if(select2 > 0){
               let selector = "#productInfoDetailDl .prd-opt-row.selectable";
@@ -239,26 +229,6 @@ module.exports = async function(param){
                   buyDirect();
                 },2000);
               })
-              /*
-               console.log("정적 셀렉트 영역이 존재합니다.");
-               await page.evaluate(async ()=>{
-                 $(".product_info_detailDL select option").each(function(){
-
-                  	if($(this).val().match("품절")){
-                  		$(this).remove()
-                  	}
-                  })
-
-                  $(".product_info_detailDL select").each(function(){
-                    $(this).val($(this).find("option")[$(this).find("option").length-1].value);
-                    $(this).change();
-                  })
-               })
-               await page.evaluate(async()=>{
-                 setTimeout(function(){
-                   buyDirect();
-                 },2000);
-               })*/
             }
             else{
               console.log("셀렉트 영역이 존재하지 않습니다.");

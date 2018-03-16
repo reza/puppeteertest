@@ -13,6 +13,12 @@ const moduleName = "LOGIN :: ";
         await popup.click("#tab li:nth-child(2)");
             logger.debug(moduleName + "로그인 페이지를 로드하였습니다.");
                 try{
+                  await common.screenshot(page,datapath+"site.jpg",{
+                    title:"TheHyundai PC Login Module",
+                    date: param.datetime,
+                    platform: param.platform,
+                    phase: 0
+                  });
 
                   // ID 입력
                   logger.debug(moduleName + "ID 포커싱");
@@ -33,7 +39,6 @@ const moduleName = "LOGIN :: ";
                   // 로그인 시도
                   logger.debug(moduleName + "로그인을 시도합니다!");
                   await popup.click("#login-tab-02 form[name='memberLoginForm'] button.btn-login")
-                  //await page.screenshot({path:"loginafter.jpg",fullPage:true});
                   logger.debug(moduleName + "로그인완료!");
                   try{
                     // 로그인 이후

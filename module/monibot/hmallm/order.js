@@ -9,35 +9,41 @@ module.exports = async function(param){
     var page = param.page;
 
 
-    var screenshotSetting = {
-      title:"HMALL Detail Module",
+    logger.debug(moduleName + "ORDER 페이지를 캡처했습니다.");
+
+
+    async function selectCard(){
+      await page.click(".order2016_payment .select_card a:nth-child(1)");
+      await page.waitFor(2000);
+      await page.evaluate(function(){
+        $("#stlmCrdInf").val("03|I||02");
+        $("#stlmCrdInf").change();
+      });
+      await page.waitFor(2000);
+    }
+    async function agree(){
+      await page.click("#allAgree");
+    }
+    async function runOrder(){
+      await page.evaluate(function(){premAddrCheck();})
+    }
+
+
+    //Main
+    await page.waitFor(2000);
+    await common.screenshot(page,param.datapath+"order.jpg",{
+      title:"TheHyundai PC Order Module",
       date: param.datetime,
       platform: param.platform,
       phase: 0
-    }
+    });
+    selectCard();
+    await page.waitFor(2000);
+    agree();
+    await page.waitFor(2000);
+    runOrder();
+    await page.waitFor(2000);
 
-    await common.screenshot(page,param.datapath+"order.jpg",screenshotSetting);
-    logger.debug(moduleName + "ORDER 페이지를 캡처했습니다.");
-
-    await page.click("#payTypeDiv .payType label[for='payType1']",{delay:250});
-    logger.debug(moduleName + "ORDER 페이지 결제수단 선택! 1");
-
-    await page.click("#payTypeDiv .payType label[for='payType1']",{delay:250});
-    logger.debug(moduleName + "ORDER 페이지 결제수단 선택! 2");
-
-    await page.click(".paymentForm select[name='stlmCrdInf']",{delay:250});
-    logger.debug(moduleName + "ORDER 페이지 결제수단 선택! 3");
-
-    await page.evaluate(()=>{
-      $(".paymentForm select[name='stlmCrdInf']").val('07|N|6|08').trigger('change');
-    })
-    logger.debug(moduleName + "ORDER 페이지 결제수단 선택! 4 (신한카드)");
-
-    await page.click("#agreeChk",{delay:250});
-    logger.debug(moduleName + "동의를 체크했습니다.");
-
-    await page.click(".sbBtns > button",{delay:250});
-    logger.debug(moduleName + "결제를 시작합니다!");
     await page.evaluate(function(){
       setTimeout(function(){
 
@@ -60,6 +66,8 @@ module.exports = async function(param){
         selectGift();
       })
     }*/
+            logger.debug(moduleName + "결제 모듈을 호출합니다!");
+            await pg.shinhan(page,param);
 
 
     await browser.once('targetcreated',async target=>{

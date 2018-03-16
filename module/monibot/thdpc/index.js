@@ -27,22 +27,16 @@ exports.data = {
 module.exports = function(parameter){
   puppeteer.launch({
     headless:false,
-//    devtools:true,
     args: ['--no-sandbox', '--disable-setuid-sandbox','--enable-file-cookies']
   }).then(async browser => {
     var page = await browser.newPage();
     var DateManager = dmr.DateManager;
     var date = new DateManager();
     var datapath;
-    datapath = "./hmall/"+date.text+"/";
+    datapath = "./hmall/thd_pc_"+date.text+"/";
     await fs.mkdirSync(datapath,0777);
-    await fs.mkdirSync(datapath+"/pc/",0777);
-    await fs.mkdirSync(datapath+"/mobile/",0777);
     await page.setViewport({width:1200,height:800});
 
-    await page.on('dialog',dlg=>{
-      //dlg.dismiss();
-    })
     await page.on('pageerror',async msg=>{
       console.log("MAIN :: pageerror");
       await common.consolelog(page,gParam.datapath+"/MainError.jpg",
@@ -68,23 +62,22 @@ module.exports = function(parameter){
         "platform" : "pc",
         "folder" : date.text,
         "datetime" : date.datetime,
-        "datapath" : datapath+"pc",
+        "datapath" : datapath,
         "telegram" : parameter.telegram
       }
 
       gParam = param;
       var screenshotSetting = {
-        title:"HMALL Main Module",
+        title:"TheHyundai PC Main Module",
         date: param.datetime,
         platform: param.platform,
         phase: 0
       }
 
       try{
-        await common.screenshot(page,datapath+"/pc/"+"site.jpg",screenshotSetting);
+        await common.screenshot(page,datapath+"site.jpg",screenshotSetting);
 
         await page.evaluate(()=>{
-          //openadsfaf();
           openLoginPopup();
         })
 

@@ -93,23 +93,27 @@ module.exports = async function(param){
         })*/
 
         logger.debug(moduleName + "로그인 이후 홈페이지로 돌아왔습니다.");
-
+        //await common.screenshot(page,param.datapath+"site_Logined.jpg",screenshotSetting);
         logger.debug(moduleName + "로그인 이후 메인페이지 캡처완료!");
 
         logger.debug(moduleName + "임의의 페이지로 접속을 시도합니다.");
 
-        await page.waitFor(3000);
-        await page.evaluate(async ()=>{
-          var randomNum = Math.floor(Math.random() * $(".itemList_star > a").length);
-          $(".itemList_star > a").get(randomNum).click();
+        await page.waitFor(1000);
+        var url = await page.evaluate(async ()=>{
+          var itemList = $("#js-tpl-the-dream-dill a").map(function(a){return this.href});
+          return itemList[Math.floor(Math.random() * itemList.length)];
         })
-        await common.sendMessage("메인에 있는 상세페이지에 접근을 시도합니다!\n");
+        //url = "http://m.thehyundai.com/front/pda/itemPtc.thd?slitmCd=2046496174&MainpageGroup=TheDreamDeal&GroupbannerName=TheDreamDeal_9";
+        //url = "http://m.thehyundai.com/front/pda/itemPtc.thd?slitmCd=2046496174&MainpageGroup=TheDreamDeal&GroupbannerName=TheDreamDeal_9";
+        await page.waitFor(1000);
+        await common.sendMessage("모니터링을 위해 상세페이지로 접근합니다!\n");
+      //  url = "http://m.thehyundai.com/front/pda/itemPtc.thd?slitmCd=2064652258&MainpageGroup=TheDreamDeal&GroupbannerName=TheDreamDeal_6";
+        await page.goto(url,{waitUntil:"domcontentloaded"});
         //a = "http://www.hyundaihmall.com/front/pda/itemPtc.do?slitmCd=2061104362&MainpageGroup=CateSect01&GroupbannerName=CateSect01_5_87914_0214"; // 품절
         //a='http://www.hyundaihmall.com/front/pda/itemPtc.do?slitmCd=2060498356&MainpageGroup=CateSect01&GroupbannerName=CateSect01_3_87911_0218'; // 정적 셀럭트박스
         //a="http://www.hyundaihmall.com/front/pda/itemPtc.do?slitmCd=2064086386&MainpageGroup=TVSect&GroupbannerName=TVSect_2_87506_0206"; // 테스트
         //a = "http://www.hyundaihmall.com/front/pda/itemPtc.do?slitmCd=2056663405&MainpageGroup=CateSect08&GroupbannerName=CateSect08_1_87691_0211"
         //a = "http://www.hyundaihmall.com/front/pda/itemPtc.do?slitmCd=2064536893&Main%20pageGroup=CateSect05&GroupbannerName=CateSect05_2_87912_0214"
-
 
         /*
 
@@ -126,23 +130,24 @@ module.exports = async function(param){
         */
         await page.once("load",async()=>{
 
+        await common.screenshot(page,param.datapath+"detail.jpg",{
+          title:"TheHyundai Mobile Detail Module",
+          date: param.datetime,
+          platform: param.platform,
+          phase: 0
+        });
+          console.log("상세페이지 접근 완료!");
         await common.sendMessage(await page.url());
 //    await page.$('a[href*="/front/pda/itemPtc.do"]').click().then(async()=>{
-        const GetSelectorButton0 = () => "#btn_group button.btnOrange";
-        const GetSelectorButton1 = () => "#divBtnFlexForEasySelect button.btnOrange";
+        const GetSelectorButton0 = () => ".product-option-layer-button .btn-order";
 
-        const GetSelectorDoneButton0 = () => "#btn_groupDetail button.btnOrange"
-        const GetSelectorDoneButton1 = () => "#divBtnFlexForEasySelect button.btnOrange"
+        const GetSelectorDoneButton0 = () => ".product-button .btn-order"
 
-        const GetSelectorSelectedItemCount1 = () => "#divOptionForEasySelectArea .quantity1";
-        const GetSelectorSelectedItemCount2 = () => "#itemDetailREasyDiv .quantity1";
+        const GetSelectorSelectedItemCount1 = () => ".selected-product .selected-uitm";
 
-        const GetSelectorOption = select => "#option_con div > ul > li:nth-child("+(select+1)+") a.optbox_sel";
-        const GetSelectorOptionDetail = select => "#option_con div > ul > li:nth-child("+(select+1)+") .dg_wrap .list_wrap a";
-
-        const GetSelectorOptionBasic = select => "#ul_optionBsicUitm";
-        const GetSelectorOptionBasicDetail = select => "#ul_optionBsicUitm .combo_box_list li:nth-child("+(select+1)+") > a";
-        const GetSelectorOptionBasicDetailList = () => "#ul_optionBsicUitm .combo_box_list li";
+        const GetSelectorOption = select => "#productInfoDetailDl .selbox:nth-child("+(select+1)+") .opt-select-value a.ellips";
+        const GetSelectorOptionDetail = select => "#productInfoDetailDl .selbox:nth-child("+(select+1)+") .opt-select-layer li > ul > li a";
+        const GetSelectorOptionSelectLayer = select => "#productInfoDetailDl .selbox:nth-child("+(select+1)+") .opt-select-layer > li";
 
         const ListInvisible = function(){ return $(this).css("display") == "none"; };
 
@@ -152,20 +157,23 @@ module.exports = async function(param){
           return result;
         }
         let removeListElement = async function(selector){
-          await page.evaluate(function(sel,fil){
-            $(sel).filter(function(){ return $(this).css("display") == "none"; }).remove();
+          await page.evaluate(function(sel){
+            $(sel).filter(function(){ return $(this).attr("class") ? $(this).attr("class").match("type-soldout") !== null : false; }).remove();
             console.log("DONE2");
           },selector)
         }
-
+        let attachOption = async function(selector,classname,indexNumber){
+          await page.evaluate(function(sel,name,iNum){
+            $(sel).each(function(idx){
+              $(this).addClass(name+iNum+"-"+idx)
+            })
+            console.log("DONE2");
+          },selector,classname,indexNumber)
+        }
 
         // ACTION
         async function buttonClick(){
-          if(await GetCount(GetSelectorButton1()) > 0){
-            await page.click(GetSelectorButton1());
-          }else{
-            await page.click(GetSelectorButton0());
-          }
+          await page.click(GetSelectorButton0());
         }
         async function DoneButtonClick(){
           await page.evaluate(function(){
@@ -178,68 +186,69 @@ module.exports = async function(param){
             await page.click(GetSelectorDoneButton0());
           }*/
         }
-        await common.screenshot(page,param.datapath+"detail.jpg",{
-          title:"TheHyundai PC Order Module",
-          date: param.datetime,
-          platform: param.platform,
-          phase: 0
-        });
+
+
+        async function active_select(sel){
+            console.log("클릭 : "+sel)
+            await page.waitForSelector(sel);
+            console.log("===============");
+            var gso1 = await GetCount(sel);
+            console.log(gso1);
+            await page.waitFor(1000);
+            await page.click(sel); // Click
+        }
+
+        async function click_select(sel,idx){
+            await page.waitForSelector(sel);
+            await removeListElement(sel,ListInvisible);
+            await attachOption(sel,"monibot-option-class",idx)
+            await page.waitFor(1000);
+            console.log("===============");
+            var gso2 = await GetCount(sel);
+            console.log(gso2);
+            await page.evaluate(function(){
+              $(".opt-select-box").addClass("current");
+            })
+            await page.click(".monibot-option-class"+idx+"-"+0); // Click
+        }
         buttonClick();
         for(i=0;i<10;i++){ // 무한 반복을 하지 않기 위한 for문
 
-          console.log("반복문 시작!");
           await page.waitFor(1000);
-          console.log("판단1 : "+await GetCount(GetSelectorSelectedItemCount1()));
-          console.log("판단2 : "+await GetCount(GetSelectorSelectedItemCount2()));
-          if(await GetCount(GetSelectorSelectedItemCount1()) == 0 && await GetCount(GetSelectorSelectedItemCount2()) == 0){
-            console.log("선택된 데이터가 없습니다.");
-            console.log(await GetCount(GetSelectorOption(i)));
-            console.log(await GetCount(GetSelectorOptionBasic(i)));
-            if(await GetCount(GetSelectorOption(i)) > 0){
+          if(await GetCount(GetSelectorSelectedItemCount1()) == 0){
+            //if(await GetCount(GetSelectorOption(i)) > 0){
               console.log("복합형!");
               // 복합형
-              console.log("클릭 : "+GetSelectorOption(i))
-              await page.waitForSelector(GetSelectorOption(i));
-              console.log("===============");
-              var gso1 = await GetCount(GetSelectorOption(i));
-              console.log(gso1);
+              active_select(GetSelectorOption(i))
               await page.waitFor(1000);
-              await page.click(GetSelectorOption(i));
-          //    await removeListElement(GetSelectorOption(i));
-              await page.waitForSelector(GetSelectorOptionDetail(i));
-              await removeListElement(GetSelectorOptionDetail(i),ListInvisible);
-              await page.waitFor(1000);
-              console.log("===============");
-              var gso2 = await GetCount(GetSelectorOptionDetail(i));
-              console.log(gso2);
-              console.log(await GetSelectorOptionDetail(i));
-              await page.click(GetSelectorOptionDetail(i));
+              let SELyr = GetSelectorOptionSelectLayer(i);
+              let selectCount = await GetCount(SELyr);
+              console.log(SELyr);
+              console.log(selectCount);
+              if(selectCount > 1){
+                console.log(SELyr+" ul > li > a");
+
+                console.log("append");
+                for(j=0;j<selectCount;j++){
+                  await attachOption(SELyr+`:nth-child(${j+1}) ul > li > a`,"monibot-complex-option-class",j)
+                  await page.waitFor(2000);
+                  await page.waitFor(".monibot-complex-option-class"+j+"-"+0);
+                  console.log(".monibot-complex-option-class"+j+"-"+0);
+                  active_select(GetSelectorOption(i))
+                  await page.evaluate(function(){
+                    $(".opt-select-box").addClass("current");
+                  })
+                  await page.click(".monibot-complex-option-class"+j+"-"+0);
+                }
+              }else{
+                click_select(GetSelectorOptionDetail(i),i);
+              }
 
 
-            }else if(await GetCount(GetSelectorOptionBasic()) > 0){
-              console.log("일반형!");
-              // 일반형
-              console.log("클릭 : "+GetSelectorOptionBasic(i))
-                await page.waitForSelector(GetSelectorOptionBasic(i));
-                console.log("===============");
-                var gsob1 = await GetCount(GetSelectorOptionBasic(i));
-                console.log(gsob1);
-                await page.waitFor(1000);
-                await page.click(GetSelectorOptionBasic(i));
-            //    await removeListElement(GetSelectorOptionBasic(i));
-                await page.waitForSelector(GetSelectorOptionBasicDetail(i));
-                await removeListElement(GetSelectorOptionBasicDetail(i),ListInvisible);
-                await page.waitFor(1000);
-                console.log("===============");
-                var gsob2 = await GetCount(GetSelectorOptionBasicDetail(i));
-                console.log(gsob2);
-                console.log(await GetSelectorOptionBasicDetail(i));
-                await page.click(GetSelectorOptionBasicDetail(i));
-
-            }else{
-              console.log("데이터가 선택되었습니다.");
-              i=10;
-            }
+          //  }else{
+          //    console.log("데이터가 선택되었습니다.");
+          //    i=10;
+          //  }
 
           }else{
             i=10;

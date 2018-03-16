@@ -1,9 +1,11 @@
 const hmallpc = require("./hmallpc")
 const thdpc = require("./thdpc")
+const thdm = require("./thdm")
 const hmallm = require("./hmallm")
 module.exports = function(parameter){
   var random = Math.floor((Math.random()*10)%2);
-  hmallm(parameter);
+  thdm(parameter);
+//  thdm(parameter);
 //  thdpc(parameter);
 /*
   if(random == 1){
